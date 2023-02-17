@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2 021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
+import time
+from digitalio import DigitalInOut
+import board
+import adafruit_matrixkeypad
+
+# Extended 4x4 matrix keypad
+rows = [DigitalInOut(x) for x in (board.GP15, board.GP14, board.GP13, board.GP12)]
+cols = [DigitalInOut(x) for x in (board.GP11, board.GP10, board.GP9, board.GP8)]
+keys = ((1, 2, 3, "A"), (4, 5, 6, "B"), (7, 8, 9, "C"), ("*", 0, "#", "D"))
+
+keypad = adafruit_matrixkeypad.Matrix_Keypad(rows, cols, keys)
+code = []
+elements = 0
+print("enter the code on the keypad")
+print(" ")
+
+while True:
+    keys = keypad.pressed_keys
+    if keys and not keys == ["#"] and not keys == ["*"]:
+        code.append(keys)
+        elements += 1
+        print(code)
+    if keys == ["#"]:
+        break
+    if keys == ["*"]:
+        if elements == 0:
+            print("cannot be deleted!")
+        else:
+            code.pop(len(code) - 1)
+            elements -= 1
+            print(code)
+    time.sleep(0.16)
+ # example code:
+if code == [[1], [2], [7], [3]]:  
+    print("correct code!")
+else:
+    print("wrong code!")
